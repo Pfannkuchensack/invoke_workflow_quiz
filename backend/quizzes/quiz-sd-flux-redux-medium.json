@@ -1,0 +1,437 @@
+{
+  "id": "sd-flux-redux-medium",
+  "name": "SD to FLUX Redux",
+  "description": "Connect the pieces of a workflow that upscales SD 1.5 images using FLUX Redux. This workflow extracts prompts from image metadata and uses image-to-image with Redux conditioning.",
+  "difficulty": "medium",
+  "workflow": {
+    "name": "SD to FLUX Redux (Simplified)",
+    "author": "Xorpio",
+    "description": "Upscale SD images using FLUX Redux",
+    "version": "1.6",
+    "contact": "",
+    "tags": "flux, redux, upscale",
+    "notes": "",
+    "exposedFields": [],
+    "meta": {
+      "category": "user",
+      "version": "3.0.0"
+    },
+    "nodes": [
+      {
+        "id": "flux_model_loader",
+        "type": "invocation",
+        "data": {
+          "id": "flux_model_loader",
+          "version": "1.0.6",
+          "label": "Flux Model Loader",
+          "notes": "",
+          "type": "flux_model_loader",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 270 }
+      },
+      {
+        "id": "flux_text_encoder",
+        "type": "invocation",
+        "data": {
+          "id": "flux_text_encoder",
+          "version": "1.1.2",
+          "label": "Flux Text Encoder",
+          "notes": "",
+          "type": "flux_text_encoder",
+          "inputs": {
+            "prompt": { "name": "prompt", "label": "", "description": "", "value": "" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 600, "y": 0 }
+      },
+      {
+        "id": "collect_cond",
+        "type": "invocation",
+        "data": {
+          "id": "collect_cond",
+          "version": "1.0.0",
+          "label": "Collect Conditioning",
+          "notes": "",
+          "type": "collect",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 900, "y": 0 }
+      },
+      {
+        "id": "flux_vae_encode",
+        "type": "invocation",
+        "data": {
+          "id": "flux_vae_encode",
+          "version": "1.0.1",
+          "label": "Flux VAE Encode",
+          "notes": "",
+          "type": "flux_vae_encode",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 600, "y": 360 }
+      },
+      {
+        "id": "flux_redux",
+        "type": "invocation",
+        "data": {
+          "id": "flux_redux",
+          "version": "2.0.0",
+          "label": "Flux Redux",
+          "notes": "",
+          "type": "flux_redux",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 600, "y": 630 }
+      },
+      {
+        "id": "collect_redux",
+        "type": "invocation",
+        "data": {
+          "id": "collect_redux",
+          "version": "1.0.0",
+          "label": "Collect Redux",
+          "notes": "",
+          "type": "collect",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 900, "y": 630 }
+      },
+      {
+        "id": "flux_denoise",
+        "type": "invocation",
+        "data": {
+          "id": "flux_denoise",
+          "version": "4.0.0",
+          "label": "Flux Denoise",
+          "notes": "",
+          "type": "flux_denoise",
+          "inputs": {
+            "num_steps": { "name": "num_steps", "label": "", "description": "", "value": 30 },
+            "guidance": { "name": "guidance", "label": "", "description": "", "value": 4 },
+            "denoising_start": { "name": "denoising_start", "label": "", "description": "", "value": 0.13 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 1200, "y": 270 }
+      },
+      {
+        "id": "flux_vae_decode",
+        "type": "invocation",
+        "data": {
+          "id": "flux_vae_decode",
+          "version": "1.0.2",
+          "label": "Flux VAE Decode",
+          "notes": "",
+          "type": "flux_vae_decode",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": false,
+          "useCache": true
+        },
+        "position": { "x": 1740, "y": 270 }
+      },
+      {
+        "id": "image_batch",
+        "type": "invocation",
+        "data": {
+          "id": "image_batch",
+          "version": "1.0.0",
+          "label": "Image Batch",
+          "notes": "",
+          "type": "image_batch",
+          "inputs": {
+            "images": { "name": "images", "label": "", "description": "", "value": [] }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 540 }
+      },
+      {
+        "id": "img_resize",
+        "type": "invocation",
+        "data": {
+          "id": "img_resize",
+          "version": "1.2.2",
+          "label": "Image Resize",
+          "notes": "",
+          "type": "img_resize",
+          "inputs": {
+            "width": { "name": "width", "label": "", "description": "", "value": 1024 },
+            "height": { "name": "height", "label": "", "description": "", "value": 1024 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 810 }
+      },
+      {
+        "id": "rand_int",
+        "type": "invocation",
+        "data": {
+          "id": "rand_int",
+          "version": "1.0.1",
+          "label": "Random Seed",
+          "notes": "",
+          "type": "rand_int",
+          "inputs": {
+            "low": { "name": "low", "label": "", "description": "", "value": 0 },
+            "high": { "name": "high", "label": "", "description": "", "value": 2147483647 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 900, "y": 900 }
+      },
+      {
+        "id": "metadata_from_image",
+        "type": "invocation",
+        "data": {
+          "id": "metadata_from_image",
+          "version": "1.0.1",
+          "label": "Metadata from Image",
+          "notes": "",
+          "type": "metadata_from_image",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 0 }
+      },
+      {
+        "id": "metadata_to_string",
+        "type": "invocation",
+        "data": {
+          "id": "metadata_to_string",
+          "version": "1.0.0",
+          "label": "Extract Prompt",
+          "notes": "",
+          "type": "metadata_to_string",
+          "inputs": {
+            "label": { "name": "label", "label": "", "description": "", "value": "positive_prompt" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 300, "y": 0 }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-transformer",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_denoise",
+        "sourceHandle": "transformer",
+        "targetHandle": "transformer"
+      },
+      {
+        "id": "edge-vae-denoise",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_denoise",
+        "sourceHandle": "vae",
+        "targetHandle": "controlnet_vae"
+      },
+      {
+        "id": "edge-vae-decode",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_vae_decode",
+        "sourceHandle": "vae",
+        "targetHandle": "vae"
+      },
+      {
+        "id": "edge-clip",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "clip",
+        "targetHandle": "clip"
+      },
+      {
+        "id": "edge-t5",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "t5_encoder",
+        "targetHandle": "t5_encoder"
+      },
+      {
+        "id": "edge-max-seq",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "max_seq_len",
+        "targetHandle": "t5_max_seq_len"
+      },
+      {
+        "id": "edge-cond-collect",
+        "type": "default",
+        "source": "flux_text_encoder",
+        "target": "collect_cond",
+        "sourceHandle": "conditioning",
+        "targetHandle": "item"
+      },
+      {
+        "id": "edge-cond-denoise",
+        "type": "default",
+        "source": "collect_cond",
+        "target": "flux_denoise",
+        "sourceHandle": "collection",
+        "targetHandle": "positive_text_conditioning"
+      },
+      {
+        "id": "edge-vae-encode",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_vae_encode",
+        "sourceHandle": "vae",
+        "targetHandle": "vae"
+      },
+      {
+        "id": "edge-latents-denoise",
+        "type": "default",
+        "source": "flux_vae_encode",
+        "target": "flux_denoise",
+        "sourceHandle": "latents",
+        "targetHandle": "latents"
+      },
+      {
+        "id": "edge-redux-collect",
+        "type": "default",
+        "source": "flux_redux",
+        "target": "collect_redux",
+        "sourceHandle": "redux_cond",
+        "targetHandle": "item"
+      },
+      {
+        "id": "edge-redux-denoise",
+        "type": "default",
+        "source": "collect_redux",
+        "target": "flux_denoise",
+        "sourceHandle": "collection",
+        "targetHandle": "redux_conditioning"
+      },
+      {
+        "id": "edge-latents-decode",
+        "type": "default",
+        "source": "flux_denoise",
+        "target": "flux_vae_decode",
+        "sourceHandle": "latents",
+        "targetHandle": "latents"
+      },
+      {
+        "id": "edge-batch-resize",
+        "type": "default",
+        "source": "image_batch",
+        "target": "img_resize",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-resize-encode",
+        "type": "default",
+        "source": "img_resize",
+        "target": "flux_vae_encode",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-resize-redux",
+        "type": "default",
+        "source": "img_resize",
+        "target": "flux_redux",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-resize-width",
+        "type": "default",
+        "source": "img_resize",
+        "target": "flux_denoise",
+        "sourceHandle": "width",
+        "targetHandle": "width"
+      },
+      {
+        "id": "edge-resize-height",
+        "type": "default",
+        "source": "img_resize",
+        "target": "flux_denoise",
+        "sourceHandle": "height",
+        "targetHandle": "height"
+      },
+      {
+        "id": "edge-seed",
+        "type": "default",
+        "source": "rand_int",
+        "target": "flux_denoise",
+        "sourceHandle": "value",
+        "targetHandle": "seed"
+      },
+      {
+        "id": "edge-batch-metadata",
+        "type": "default",
+        "source": "image_batch",
+        "target": "metadata_from_image",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-metadata-string",
+        "type": "default",
+        "source": "metadata_from_image",
+        "target": "metadata_to_string",
+        "sourceHandle": "metadata",
+        "targetHandle": "metadata"
+      },
+      {
+        "id": "edge-prompt",
+        "type": "default",
+        "source": "metadata_to_string",
+        "target": "flux_text_encoder",
+        "sourceHandle": "value",
+        "targetHandle": "prompt"
+      }
+    ]
+  },
+  "hiddenEdges": [
+    "edge-transformer",
+    "edge-clip",
+    "edge-t5",
+    "edge-cond-collect",
+    "edge-cond-denoise",
+    "edge-latents-denoise",
+    "edge-redux-collect",
+    "edge-redux-denoise",
+    "edge-latents-decode",
+    "edge-resize-encode",
+    "edge-resize-redux"
+  ]
+}

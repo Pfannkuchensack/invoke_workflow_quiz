@@ -1,0 +1,198 @@
+{
+  "id": "flux-txt2img-hard",
+  "name": "FLUX Text to Image - Advanced",
+  "description": "Complete this FLUX text-to-image workflow by connecting edges AND adding a missing node. You'll need to figure out which node is missing and add it from the node palette!",
+  "difficulty": "hard",
+  "workflow": {
+    "name": "FLUX Text to Image (Incomplete)",
+    "author": "InvokeAI",
+    "description": "A FLUX text-to-image workflow with missing components",
+    "version": "1.0.0",
+    "contact": "",
+    "tags": "flux, text to image",
+    "notes": "",
+    "exposedFields": [],
+    "meta": {
+      "category": "user",
+      "version": "3.0.0"
+    },
+    "nodes": [
+      {
+        "id": "flux_model_loader",
+        "type": "invocation",
+        "data": {
+          "id": "flux_model_loader",
+          "version": "1.0.6",
+          "label": "Flux Model Loader",
+          "notes": "",
+          "type": "flux_model_loader",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 350 }
+      },
+      {
+        "id": "flux_text_encoder",
+        "type": "invocation",
+        "data": {
+          "id": "flux_text_encoder",
+          "version": "1.1.2",
+          "label": "Flux Text Encoder",
+          "notes": "",
+          "type": "flux_text_encoder",
+          "inputs": {
+            "prompt": { "name": "prompt", "label": "", "description": "", "value": "A beautiful sunset over mountains" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 0 }
+      },
+      {
+        "id": "flux_denoise",
+        "type": "invocation",
+        "data": {
+          "id": "flux_denoise",
+          "version": "4.0.0",
+          "label": "Flux Denoise",
+          "notes": "",
+          "type": "flux_denoise",
+          "inputs": {
+            "width": { "name": "width", "label": "", "description": "", "value": 1024 },
+            "height": { "name": "height", "label": "", "description": "", "value": 1024 },
+            "num_steps": { "name": "num_steps", "label": "", "description": "", "value": 25 },
+            "guidance": { "name": "guidance", "label": "", "description": "", "value": 3.5 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 1100, "y": 350 }
+      },
+      {
+        "id": "flux_vae_decode",
+        "type": "invocation",
+        "data": {
+          "id": "flux_vae_decode",
+          "version": "1.0.2",
+          "label": "Flux VAE Decode",
+          "notes": "",
+          "type": "flux_vae_decode",
+          "inputs": {},
+          "isOpen": true,
+          "isIntermediate": false,
+          "useCache": true
+        },
+        "position": { "x": 1650, "y": 350 }
+      },
+      {
+        "id": "rand_int",
+        "type": "invocation",
+        "data": {
+          "id": "rand_int",
+          "version": "1.0.1",
+          "label": "Random Seed",
+          "notes": "HIDDEN NODE - Player must add this!",
+          "type": "rand_int",
+          "inputs": {
+            "low": { "name": "low", "label": "", "description": "", "value": 0 },
+            "high": { "name": "high", "label": "", "description": "", "value": 2147483647 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 770 }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-transformer",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_denoise",
+        "sourceHandle": "transformer",
+        "targetHandle": "transformer"
+      },
+      {
+        "id": "edge-vae-denoise",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_denoise",
+        "sourceHandle": "vae",
+        "targetHandle": "controlnet_vae"
+      },
+      {
+        "id": "edge-vae-decode",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_vae_decode",
+        "sourceHandle": "vae",
+        "targetHandle": "vae"
+      },
+      {
+        "id": "edge-clip",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "clip",
+        "targetHandle": "clip"
+      },
+      {
+        "id": "edge-t5",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "t5_encoder",
+        "targetHandle": "t5_encoder"
+      },
+      {
+        "id": "edge-max-seq",
+        "type": "default",
+        "source": "flux_model_loader",
+        "target": "flux_text_encoder",
+        "sourceHandle": "max_seq_len",
+        "targetHandle": "t5_max_seq_len"
+      },
+      {
+        "id": "edge-conditioning",
+        "type": "default",
+        "source": "flux_text_encoder",
+        "target": "flux_denoise",
+        "sourceHandle": "conditioning",
+        "targetHandle": "positive_text_conditioning"
+      },
+      {
+        "id": "edge-latents-decode",
+        "type": "default",
+        "source": "flux_denoise",
+        "target": "flux_vae_decode",
+        "sourceHandle": "latents",
+        "targetHandle": "latents"
+      },
+      {
+        "id": "edge-seed",
+        "type": "default",
+        "source": "rand_int",
+        "target": "flux_denoise",
+        "sourceHandle": "value",
+        "targetHandle": "seed"
+      }
+    ]
+  },
+  "hiddenEdges": [
+    "edge-transformer",
+    "edge-clip",
+    "edge-t5",
+    "edge-max-seq",
+    "edge-conditioning",
+    "edge-latents-decode",
+    "edge-seed"
+  ],
+  "hiddenNodes": [
+    "rand_int"
+  ]
+}

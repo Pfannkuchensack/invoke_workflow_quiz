@@ -1,0 +1,318 @@
+{
+  "id": "flux-kontext-easy",
+  "name": "Flux Kontext - Single Image",
+  "description": "Learn the basic structure of a Flux Kontext workflow. Connect the missing edges to complete the image editing pipeline.",
+  "difficulty": "easy",
+  "workflow": {
+    "name": "Flux Kontext [Single image]",
+    "author": "InvokeAI",
+    "description": "Flux Kontext to change a single image",
+    "version": "1.1.0",
+    "contact": "",
+    "tags": "flux, text to image",
+    "notes": "",
+    "exposedFields": [],
+    "meta": {
+      "category": "user",
+      "version": "3.0.0"
+    },
+    "nodes": [
+      {
+        "id": "7e5172eb-48c1-44db-a770-8fd83e1435d1",
+        "type": "invocation",
+        "data": {
+          "id": "7e5172eb-48c1-44db-a770-8fd83e1435d1",
+          "version": "1.0.2",
+          "label": "VAE Decode",
+          "notes": "",
+          "type": "flux_vae_decode",
+          "inputs": {
+            "latents": { "name": "latents", "label": "", "description": "" },
+            "vae": { "name": "vae", "label": "", "description": "" }
+          },
+          "isOpen": true,
+          "isIntermediate": false,
+          "useCache": true
+        },
+        "position": { "x": 1600, "y": 280 }
+      },
+      {
+        "id": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "type": "invocation",
+        "data": {
+          "id": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+          "version": "1.0.6",
+          "label": "Flux Model Loader",
+          "notes": "",
+          "type": "flux_model_loader",
+          "inputs": {
+            "model": { "name": "model", "label": "", "description": "" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 280 }
+      },
+      {
+        "id": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+        "type": "invocation",
+        "data": {
+          "id": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+          "version": "1.1.2",
+          "label": "Flux Text Encoder",
+          "notes": "",
+          "type": "flux_text_encoder",
+          "inputs": {
+            "clip": { "name": "clip", "label": "", "description": "" },
+            "t5_encoder": { "name": "t5_encoder", "label": "", "description": "" },
+            "t5_max_seq_len": { "name": "t5_max_seq_len", "label": "", "description": "" },
+            "prompt": { "name": "prompt", "label": "", "description": "", "value": "change tshirt to white" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 0 }
+      },
+      {
+        "id": "4754c534-a5f3-4ad0-9382-7887985e668c",
+        "type": "invocation",
+        "data": {
+          "id": "4754c534-a5f3-4ad0-9382-7887985e668c",
+          "version": "1.0.1",
+          "label": "Random Integer",
+          "notes": "",
+          "type": "rand_int",
+          "inputs": {
+            "low": { "name": "low", "label": "", "description": "", "value": 0 },
+            "high": { "name": "high", "label": "", "description": "", "value": 2147483647 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 900 }
+      },
+      {
+        "id": "d7e3913d-e8a5-4c14-b012-2afc1c3066b6",
+        "type": "invocation",
+        "data": {
+          "id": "d7e3913d-e8a5-4c14-b012-2afc1c3066b6",
+          "version": "1.0.0",
+          "label": "Flux Kontext",
+          "notes": "",
+          "type": "flux_kontext",
+          "inputs": {
+            "image": { "name": "image", "label": "", "description": "" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 620 }
+      },
+      {
+        "id": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "type": "invocation",
+        "data": {
+          "id": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+          "version": "4.0.0",
+          "label": "Flux Denoise",
+          "notes": "",
+          "type": "flux_denoise",
+          "inputs": {
+            "latents": { "name": "latents", "label": "", "description": "" },
+            "transformer": { "name": "transformer", "label": "", "description": "" },
+            "positive_text_conditioning": { "name": "positive_text_conditioning", "label": "", "description": "" },
+            "seed": { "name": "seed", "label": "", "description": "" },
+            "width": { "name": "width", "label": "", "description": "" },
+            "height": { "name": "height", "label": "", "description": "" },
+            "kontext_conditioning": { "name": "kontext_conditioning", "label": "", "description": "" },
+            "controlnet_vae": { "name": "controlnet_vae", "label": "", "description": "" },
+            "num_steps": { "name": "num_steps", "label": "", "description": "", "value": 20 },
+            "guidance": { "name": "guidance", "label": "", "description": "", "value": 3 }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 1050, "y": 280 }
+      },
+      {
+        "id": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "type": "invocation",
+        "data": {
+          "id": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+          "version": "1.0.1",
+          "label": "VAE Encode",
+          "notes": "",
+          "type": "flux_vae_encode",
+          "inputs": {
+            "image": { "name": "image", "label": "", "description": "" },
+            "vae": { "name": "vae", "label": "", "description": "" }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 550, "y": 310 }
+      },
+      {
+        "id": "52cf6c66-ec9b-4df6-815a-557ff7a12caa",
+        "type": "invocation",
+        "data": {
+          "id": "52cf6c66-ec9b-4df6-815a-557ff7a12caa",
+          "version": "1.0.0",
+          "label": "Image Batch",
+          "notes": "",
+          "type": "image_batch",
+          "inputs": {
+            "images": { "name": "images", "label": "", "description": "", "value": [] }
+          },
+          "isOpen": true,
+          "isIntermediate": true,
+          "useCache": true
+        },
+        "position": { "x": 0, "y": 620 }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-vae-decode-vae",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "7e5172eb-48c1-44db-a770-8fd83e1435d1",
+        "sourceHandle": "vae",
+        "targetHandle": "vae"
+      },
+      {
+        "id": "edge-max-seq-len",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+        "sourceHandle": "max_seq_len",
+        "targetHandle": "t5_max_seq_len"
+      },
+      {
+        "id": "edge-conditioning",
+        "type": "default",
+        "source": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "conditioning",
+        "targetHandle": "positive_text_conditioning"
+      },
+      {
+        "id": "edge-seed",
+        "type": "default",
+        "source": "4754c534-a5f3-4ad0-9382-7887985e668c",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "value",
+        "targetHandle": "seed"
+      },
+      {
+        "id": "edge-latents-decode",
+        "type": "default",
+        "source": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "target": "7e5172eb-48c1-44db-a770-8fd83e1435d1",
+        "sourceHandle": "latents",
+        "targetHandle": "latents"
+      },
+      {
+        "id": "edge-kontext-cond",
+        "type": "default",
+        "source": "d7e3913d-e8a5-4c14-b012-2afc1c3066b6",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "kontext_cond",
+        "targetHandle": "kontext_conditioning"
+      },
+      {
+        "id": "edge-latents-denoise",
+        "type": "default",
+        "source": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "latents",
+        "targetHandle": "latents"
+      },
+      {
+        "id": "edge-vae-encode",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "sourceHandle": "vae",
+        "targetHandle": "vae"
+      },
+      {
+        "id": "edge-controlnet-vae",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "vae",
+        "targetHandle": "controlnet_vae"
+      },
+      {
+        "id": "edge-image-encode",
+        "type": "default",
+        "source": "52cf6c66-ec9b-4df6-815a-557ff7a12caa",
+        "target": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-image-kontext",
+        "type": "default",
+        "source": "52cf6c66-ec9b-4df6-815a-557ff7a12caa",
+        "target": "d7e3913d-e8a5-4c14-b012-2afc1c3066b6",
+        "sourceHandle": "image",
+        "targetHandle": "image"
+      },
+      {
+        "id": "edge-width",
+        "type": "default",
+        "source": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "width",
+        "targetHandle": "width"
+      },
+      {
+        "id": "edge-height",
+        "type": "default",
+        "source": "a5499dce-1338-417f-9eb7-4956fccef6bf",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "height",
+        "targetHandle": "height"
+      },
+      {
+        "id": "edge-transformer",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "f3dc6c0f-9c67-4fef-bf1f-8999f3cc69ee",
+        "sourceHandle": "transformer",
+        "targetHandle": "transformer"
+      },
+      {
+        "id": "edge-clip",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+        "sourceHandle": "clip",
+        "targetHandle": "clip"
+      },
+      {
+        "id": "edge-t5-encoder",
+        "type": "default",
+        "source": "f8d9d7c8-9ed7-4bd7-9e42-ab0e89bfac90",
+        "target": "01f674f8-b3d1-4df1-acac-6cb8e0bfb63c",
+        "sourceHandle": "t5_encoder",
+        "targetHandle": "t5_encoder"
+      }
+    ]
+  },
+  "hiddenEdges": [
+    "edge-conditioning",
+    "edge-seed",
+    "edge-latents-decode",
+    "edge-clip",
+    "edge-t5-encoder"
+  ]
+}
