@@ -22,27 +22,34 @@ export class QuizService {
   private quizCache: Map<string, QuizFile> = new Map();
 
   constructor() {
-    this.quizzesDir = path.join(__dirname, '../../quizzes');
+    // Use QUIZZES_DIR environment variable if set, otherwise use relative path
+    this.quizzesDir = process.env.QUIZZES_DIR || path.join(__dirname, '../../quizzes');
+    console.log(`Loading quizzes from: ${this.quizzesDir}`);
     this.loadQuizzes();
   }
 
   private loadQuizzes(): void {
     if (!fs.existsSync(this.quizzesDir)) {
+      console.warn(`Quizzes directory not found: ${this.quizzesDir}`);
       fs.mkdirSync(this.quizzesDir, { recursive: true });
       return;
     }
 
     const files = fs.readdirSync(this.quizzesDir).filter(f => f.endsWith('.json'));
+    console.log(`Found ${files.length} quiz file(s): ${files.join(', ')}`);
 
     for (const file of files) {
       try {
         const content = fs.readFileSync(path.join(this.quizzesDir, file), 'utf-8');
         const quiz: QuizFile = JSON.parse(content);
         this.quizCache.set(quiz.id, quiz);
+        console.log(`Loaded quiz: ${quiz.id} - ${quiz.name}`);
       } catch (error) {
         console.error(`Failed to load quiz file: ${file}`, error);
       }
     }
+
+    console.log(`Total quizzes loaded: ${this.quizCache.size}`);
   }
 
   listQuizzes(): QuizMetadata[] {
